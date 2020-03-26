@@ -1,0 +1,226 @@
+//movimiento
+#region gravedad
+if place_free(x, y+1)
+{
+	gravity = 1
+}
+else
+{
+	gravity = 0
+}
+
+if vspeed >= 15 {vspeed = 15;}
+#endregion
+
+switch(state)
+{
+	case "move":
+    #region state move
+		if keyboard_check(vk_right)
+		{
+			if !place_meeting(x + vel , y, oSuelo)
+			x += vel;
+			
+			image_xscale = 2.2;
+			sprite_index = sprkickestateRun;
+			image_speed = 1.2;
+			
+		}
+	
+		if keyboard_check(vk_left)
+		{
+			if !place_meeting(x - vel , y, oSuelo)
+			x -= vel;
+		
+			image_xscale = -2.2;
+			sprite_index = sprkickestateRun;
+			image_speed = 1.2;
+		}
+	
+		if not keyboard_check(vk_right)and not keyboard_check(vk_left)
+		{
+			sprite_index = sprkickestateidle;
+		}
+		
+		if keyboard_check(vk_right) and keyboard_check(vk_left)
+		{
+			sprite_index = sprkickestateidle;
+		}
+		
+		if keyboard_check_pressed(vk_up)
+		{
+			image_index = 0;
+			vspeed = -18
+			sprite_index = sprkickestateJump
+			state = "jump"
+		}
+	
+		if keyboard_check_pressed(vk_space)
+		{
+			image_index = 0
+			state = "rolling";
+		}
+		
+		if keyboard_check_pressed(ord("K"))
+		{
+			image_index = 0
+			buffer = false;
+			state = "attack one";
+		}
+		
+	#endregion
+		  break;
+	
+	case "jump":
+	#region state jump
+	
+	if (vspeed < 0) and (sprite_index == sprkickestateJump)
+	{
+		if (round(image_index) >= image_number)
+			sprite_index = sprkickestateJump2
+	}
+	else
+	{
+		sprite_index = sprkickestateJump1
+	}
+			
+	if keyboard_check(vk_right)
+	{
+			
+		if !place_meeting(x+ vel, y , oSuelo) x+= vel
+		image_xscale = 2.2
+	}
+	
+	if keyboard_check(vk_left) 
+	{
+		if !place_meeting(x- vel, y , oSuelo) x-= vel
+		image_xscale = -2.2
+	}
+	
+	if !place_free(x, y+1)
+		state = "move";
+	
+	#endregion
+	      break;
+	
+	case "rolling":
+	#region move rolling
+	    sprite_index = sprkickestaterolling;
+		image_speed = 1.2;
+		
+		if image_xscale = 2.2
+		{
+			x+= 8
+		}
+		if image_xscale = -2.2
+		{
+			x-= 8
+		}
+		
+		if (round(image_index) >= image_number)
+		{
+			image_index = 0;
+			state = "move";
+		}
+		
+	#endregion
+		  break;	  
+	
+	case "attack one":
+	#region state attack one
+	sprite_index = sprkickestateattack1;
+	image_speed = 1.8
+	if image_xscale = 2.2
+		{
+			x+= 0.2
+		}
+		if image_xscale = -2.2
+		{
+			x-= 0.2
+		}
+		
+	if keyboard_check_pressed(ord("K"))
+		buffer = true;
+		
+	if (round(image_index) >= image_number)
+	 {
+	    image_index = 0
+		 
+	    if buffer == true
+		{
+			buffer = false;
+			state = "attack two";
+		}
+		else
+		{
+			state = "move";
+		}
+	 }
+	
+	
+	#endregion
+	      break;
+	
+	case "attack two":
+	#region state attack two
+	
+	if sprite_index != sprkickestateattack2
+	{
+		sprite_index = sprkickestateattack2;
+		image_speed = 1.8;
+
+	}
+	
+	if image_xscale = 2.2
+		{
+			x += 3
+		}
+	if image_xscale = -2.2
+		{
+			x -= 3
+		}
+	
+if keyboard_check_pressed(ord("K"))
+	buffer = true;
+	
+	if (round(image_index) >= image_number)
+	{
+	    if buffer == true
+		{
+			buffer = false;
+			state = "attack three";
+		}
+		else
+		{
+			state = "move";
+		}
+		
+		image_index = 0
+	}
+	#endregion
+	      break;
+	
+	case "attack three":
+	#region state attack three
+	
+	if sprite_index != sprkickestateattack3
+	{
+		sprite_index = sprkickestateattack3;
+		image_speed = 1.8;
+		image_index = 1;
+	} 
+	if image_xscale = 2.2
+	{
+		x += 3
+	}
+	if image_xscale = -2.2
+	{
+		x -= 3
+	}
+		
+	if (round(image_index) >= image_number)
+			state = "move";
+		
+	#endregion
+	      break;
+}
